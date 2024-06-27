@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import "./App.css";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
@@ -7,110 +6,126 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import CakeIcon from "@mui/icons-material/Cake";
 
 function App() {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    birthDay: "",
-    birthMonth: "",
-    birthYear: "",
-    notes: "",
-  });
+  const [fname, setFname] = useState("");
+  const [lname, setLname] = useState("");
+  const [email, setEmail] = useState("");
+  const [ph, setPh] = useState("");
+  const [day, setDay] = useState("");
+  const [mon, setMon] = useState("");
+  const [year, setYear] = useState("");
+  const [note, setNote] = useState("");
 
-  const [items, setItems] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get("/api/items")
-      .then((response) => setItems(response.data))
-      .catch((error) => console.error(error));
-  }, []);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
+  const handleOnSubmit = async (e) => {
     e.preventDefault();
+  
+    const formData = {
+      fname,
+      lname,
+      email,
+      ph,
+      day,
+      mon,
+      year,
+      note,
+    };
+  
     try {
-      const res = await axios.post("/api/items", formData);
-      console.log(res.data);
-      
-      setItems([...items, res.data]);
-    } catch (err) {
-      console.error(err);
+      const response = await fetch("http://localhost:5000/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "HTTP error " + response.status);
+      }
+  
+      let result;
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        result = await response.json();
+      } else {
+        result = await response.text();
+      }
+  
+      console.warn(result);
+  
+      // Assuming these are React state setters for form inputs
+      setEmail("");
+      setFname("");
+      setPh("");
+      setDay("");
+      setMon("");
+      setYear("");
+      setNote("");
+      setLname("");
+  
+      alert("Data saved successfully");
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while saving data: " + error.message);
     }
   };
-
-  return (
-    <div className="App">
-      <form onSubmit={handleSubmit}>
+  
+  
+    return (
+    <>
+      <div className="App">
         <div className="flexC1">
           <PersonIcon />
           <input
             type="text"
-            name="firstName"
             placeholder="First Name"
-            value={formData.firstName}
-            onChange={handleChange}
+            value={fname}
+            onChange={(e) => setFname(e.target.value)}
           />
         </div>
         <input
           className="lastO"
           type="text"
-          name="lastName"
           placeholder="Last Name"
-          value={formData.lastName}
-          onChange={handleChange}
+          value={lname}
+          onChange={(e) => setLname(e.target.value)}
         />
 
         <div className="flexC3">
           <EmailIcon />
           <input
             type="text"
-            name="email"
             placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        <button type="button" className="btnAdd">
-          + Add Email
-        </button>
+        <button className="btnAdd">+ Add Email</button>
 
         <div className="flexC4">
           <PhoneIcon />
           <input
             type="text"
-            name="phone"
-            placeholder="Phone"
-            value={formData.phone}
-            onChange={handleChange}
+            placeholder="Phone "
+            value={ph}
+            onChange={(e) => setPh(e.target.value)}
           />
         </div>
-        <button type="button" className="btnAdd">
-          + Add Phone
-        </button>
+        <button className="btnAdd">+ Add Phone</button>
 
         <div className="flexC5">
           <CakeIcon />
           <input
             type="number"
-            name="birthDay"
-            placeholder="Day"
-            value={formData.birthDay}
-            onChange={handleChange}
+            placeholder="Day "
+            value={day}
+            onChange={(e) => setDay(e.target.value)}
           />
 
           <select
             className="inp2"
-            name="birthMonth"
-            value={formData.birthMonth}
-            onChange={handleChange}
+            value={mon}
+            onChange={(e) => setMon(e.target.value)}
           >
             <option value="">Select a month</option>
             <option value="1">January</option>
@@ -129,40 +144,27 @@ function App() {
           <input
             className="inp3"
             type="number"
-            name="birthYear"
-            placeholder="Year"
+            placeholder="Year "
             min="1900"
             max="2024"
-            value={formData.birthYear}
-            onChange={handleChange}
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
           />
         </div>
 
         <div className="flexC4">
           <i className="fa-solid fa-notes-medical"></i>
           <textarea
-            name="notes"
             placeholder="Notes"
-            value={formData.notes}
-            onChange={handleChange}
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
           ></textarea>
         </div>
-
-        <button type="submit">Submit</button>
-      </form>
-
-      <div>
-        <h1>Items</h1>
-        <ul>
-          {items.map((item) => (
-            <li key={item._id}>
-              <h3>{item.name}</h3>
-              <p>{item.description}</p>
-            </li>
-          ))}
-        </ul>
+        <button type="button" onClick={handleOnSubmit}>
+          Submit
+        </button>
       </div>
-    </div>
+    </>
   );
 }
 

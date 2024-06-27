@@ -17,18 +17,25 @@ function App() {
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
-  
+
+    if (!fname || !lname || !email || !ph || !day || !mon || !year) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
     const formData = {
       fname,
       lname,
       email,
-      ph,
+      phone: ph,
       day,
-      mon,
+      month: mon.toString(),
       year,
       note,
     };
-  
+
+    console.log("Sending data:", formData);
+
     try {
       const response = await fetch("http://localhost:5000/register", {
         method: "POST",
@@ -37,23 +44,15 @@ function App() {
         },
         body: JSON.stringify(formData),
       });
-  
+
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || "HTTP error " + response.status);
+        const errorData = await response.json();
+        throw new Error(errorData.error || "HTTP error " + response.status);
       }
-  
-      let result;
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.includes("application/json")) {
-        result = await response.json();
-      } else {
-        result = await response.text();
-      }
-  
-      console.warn(result);
-  
-      // Assuming these are React state setters for form inputs
+
+      const result = await response.json();
+      console.log("Response:", result);
+
       setEmail("");
       setFname("");
       setPh("");
@@ -62,18 +61,17 @@ function App() {
       setYear("");
       setNote("");
       setLname("");
-  
+
       alert("Data saved successfully");
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred while saving data: " + error.message);
     }
   };
-  
-  
-    return (
-    <>
-      <div className="App">
+
+  return (
+    <div className="App">
+      <form onSubmit={handleOnSubmit}>
         <div className="flexC1">
           <PersonIcon />
           <input
@@ -81,6 +79,7 @@ function App() {
             placeholder="First Name"
             value={fname}
             onChange={(e) => setFname(e.target.value)}
+            required
           />
         </div>
         <input
@@ -89,43 +88,48 @@ function App() {
           placeholder="Last Name"
           value={lname}
           onChange={(e) => setLname(e.target.value)}
+          required
         />
 
         <div className="flexC3">
           <EmailIcon />
           <input
-            type="text"
+            type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
         </div>
-        <button className="btnAdd">+ Add Email</button>
 
         <div className="flexC4">
           <PhoneIcon />
           <input
-            type="text"
-            placeholder="Phone "
+            type="tel"
+            placeholder="Phone"
             value={ph}
             onChange={(e) => setPh(e.target.value)}
+            required
           />
         </div>
-        <button className="btnAdd">+ Add Phone</button>
 
         <div className="flexC5">
           <CakeIcon />
           <input
             type="number"
-            placeholder="Day "
+            placeholder="Day"
             value={day}
             onChange={(e) => setDay(e.target.value)}
+            required
+            min="1"
+            max="31"
           />
 
           <select
             className="inp2"
             value={mon}
             onChange={(e) => setMon(e.target.value)}
+            required
           >
             <option value="">Select a month</option>
             <option value="1">January</option>
@@ -144,11 +148,12 @@ function App() {
           <input
             className="inp3"
             type="number"
-            placeholder="Year "
+            placeholder="Year"
             min="1900"
             max="2024"
             value={year}
             onChange={(e) => setYear(e.target.value)}
+            required
           />
         </div>
 
@@ -160,11 +165,9 @@ function App() {
             onChange={(e) => setNote(e.target.value)}
           ></textarea>
         </div>
-        <button type="button" onClick={handleOnSubmit}>
-          Submit
-        </button>
-      </div>
-    </>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
   );
 }
 

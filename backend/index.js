@@ -4,85 +4,76 @@ const cors = require("cors");
 
 const app = express();
 
-// Use the new promise-based syntax for mongoose.connect
-mongoose.connect("mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.2.0/demo", {
-  dbName: "demo",
+mongoose.connect("mongodb://127.0.0.1:27017/demo", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
 .then(() => {
   console.log("Connected to database demo");
-
-  // Start the Express server only after the database connection is successful
-  app.listen(5000, () => {
-    console.log("App listening at port 5000");
-  });
 })
 .catch(err => {
   console.error("Failed to connect to MongoDB", err);
 });
 
-// Define the User schema and model
 const UserSchema = new mongoose.Schema({
   fname: {
     type: String,
-    required: true,
+    required: [true, "First name is required"],
   },
   lname: {
     type: String,
-    required: true,
+    required: [true, "Last name is required"],
   },
   email: {
     type: String,
-    required: true,
+    required: [true, "Email is required"],
   },
   phone: {
     type: String,
-    required: true,
+    required: [true, "Phone number is required"],
   },
   day: {
     type: Number,
-    required: true,
+    required: [true, "Day is required"],
   },
   month: {
     type: String,
-    required: true,
+    required: [true, "Month is required"],
   },
   year: {
     type: Number,
-    required: true,
+    required: [true, "Year is required"],
   },
   note: {
     type: String,
-    required: true,
+    required: false,
   },
 });
 
 const User = mongoose.model("users", UserSchema);
-User.createIndexes();
 
-// Middleware setup
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000'
+}));
 
-// Define routes
 app.get("/", (req, res) => {
   res.send("App is Working");
 });
 
 app.post("/register", async (req, res) => {
   try {
+    console.log("Received data:", req.body);
     const user = new User(req.body);
     let result = await user.save();
-    result = result.toObject();
-    if (result) {
-      delete result.password;
-      res.send(req.body);
-      console.log(result);
-    } else {
-      console.log("User already registered");
-    }
+    res.status(201).json(result);
   } catch (e) {
-    res.send("Something Went Wrong");
+    console.error(e);
+    res.status(400).json({ error: e.message });
   }
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

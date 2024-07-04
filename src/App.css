@@ -1,85 +1,202 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    width: 100%;
-    height: 100vh;
-    font-family: 'Open Sans', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  height: 100vh;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .App {
-    width: 60%;
-    max-width: 500px;
+  display: flex;
+  height: 100vh;
+}
+
+/* Sidebar styles */
+.sidebar {
+  width: 250px;
+  background-color: #f1f3f4;
+  padding: 20px;
+  overflow-y: auto;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.sidebar-header span {
+  margin-left: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.create-contact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px;
+  background-color: #c2e7ff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.sidebar-menu {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-menu li {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  cursor: pointer;
+}
+
+.sidebar-menu li svg {
+  margin-right: 10px;
+}
+
+.badge {
+  background-color: #e8eaed;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  margin-left: auto;
+}
+
+.sidebar-section {
+  margin-top: 20px;
+}
+
+.sidebar-section h3 {
+  font-size: 14px;
+  color: #5f6368;
+  margin-bottom: 10px;
+}
+
+.add-label {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Main content styles */
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.searchbar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.searchbar input {
+  flex-grow: 1;
+  padding: 8px;
+  margin-left: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-container {
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 .flexC1, .flexC3, .flexC4, .flexC5 {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    width: 100%;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  width: 100%;
 }
 
-input, textarea {
-    width: 100%;
-    padding: 8px;
-    font-family: 'Open Sans', sans-serif;
-    border-radius: 5px;
-    border: solid 1px black;
-    outline: none;
-    margin-left: 10px;
+input, textarea, select {
+  width: 100%;
+  padding: 8px;
+  font-family: 'Open Sans', sans-serif;
+  border-radius: 5px;
+  border: solid 1px black;
+  outline: none;
+  margin-left: 10px;
 }
 
 .lastO {
-    width: 100%;
-    margin-left: 34px;
-    margin-bottom: 10px;
+  width: 100%;
+  margin-left: 34px;
+  margin-bottom: 10px;
 }
 
-.btnAdd {
-    width: 100%;
-    margin-left: 34px;
-    margin-bottom: 10px;
-    border-radius: 20px;
-    background-color: #d6e8fd;
-    border: none;
-    outline: none;
-    color: #427dda;
-    height: 40px;
-    cursor: pointer;
-}
-
-.flexC5 input {
-    width: calc(33.33% - 10px);
-    margin-right: 10px;
+.flexC5 input, .flexC5 select {
+  width: calc(33.33% - 10px);
+  margin-right: 10px;
 }
 
 .flexC5 input:last-child {
-    margin-right: 0;
+  margin-right: 0;
 }
 
 textarea {
-    resize: none;
-    width: 100%;
-    height: 100px;
+  resize: none;
+  width: 100%;
+  height: 100px;
 }
 
-.MuiSvgIcon-root {
-    font-size: 24px;
+button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
 }
 
-select.inp2 {
-    width: calc(33.33% - 10px);
-    padding: 8px;
-    font-family: 'Open Sans', sans-serif;
-    border-radius: 5px;
-    border: solid 1px black;
-    outline: none;
-    margin-right: 10px;
+/* User list table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+td button {
+  margin-right: 5px;
+  padding: 5px 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+td button:last-child {
+  background-color: #f44336;
 }
